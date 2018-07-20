@@ -8,7 +8,7 @@ import { Store } from '@ngrx/store';
 import { AppState } from '../app.reducer';
 import { ActivarLoadingAction,
         DesactivarLoadingAction } from '../shared/ui.actions';
-import { SetUserAction } from './auth.actions';
+import { SetUserAction, UnSetUserAction } from './auth.actions';
 import { Subscription } from 'rxjs';
 
 import { User } from './user.model';
@@ -20,6 +20,7 @@ import Swal from 'sweetalert2';
 export class AuthService {
 
   private userSubscripcion: Subscription = new Subscription();
+  private usuario: User;
 
   constructor( private afAuth: AngularFireAuth,
                 private afDB: AngularFirestore,
@@ -35,9 +36,11 @@ export class AuthService {
 
                 const newUser = new User( usuarioObj );
                 this.store.dispatch( new SetUserAction( newUser ) );
+                this.usuario = newUser;
 
               });
       } else {
+        this.usuario = null;
         this.userSubscripcion.unsubscribe();
       }
 
@@ -94,6 +97,8 @@ export class AuthService {
   logout() {
     this.afAuth.auth.signOut();
     this.router.navigate(['/login']);
+
+    this.store.dispatch( new UnSetUserAction() );
   }
 
   isAuth() {
@@ -111,4 +116,9 @@ export class AuthService {
     );
   }
 
+  getUsuario() {
+    return { ... this.usuario };
+  }
+
 }
+
