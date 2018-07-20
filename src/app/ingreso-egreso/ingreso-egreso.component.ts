@@ -5,9 +5,10 @@ import Swal from 'sweetalert2';
 import { IngresoEgreso } from './ingreso-egreso.model';
 import { IngresoEgresoService } from './ingreso-egreso.service';
 import { Store } from '@ngrx/store';
-import { AppState } from '../app.reducer';
 import { Subscription } from 'rxjs';
 import { ActivarLoadingAction, DesactivarLoadingAction } from '../shared/ui.actions';
+
+import * as fromGastos from './ingreso-egreso.reducer';
 
 @Component({
   selector: 'app-ingreso-egreso',
@@ -22,7 +23,7 @@ export class IngresoEgresoComponent implements OnInit, OnDestroy {
   subscription: Subscription = new Subscription();
 
   constructor( public ingresoEgreso: IngresoEgresoService,
-              public store: Store<AppState> ) { }
+              public store: Store<fromGastos.AppState> ) { }
 
   ngOnInit() {
     this.subscription = this.store.select('ui').subscribe( ui => this.loading = ui.isLoading );
